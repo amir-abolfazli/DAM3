@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+  <title>Drift-Aware Multi-Memory Model for Imbalanced Data Streams</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <!--<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">-->
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="./static_files/normalize.css">
+  <link rel="stylesheet" href="./static_files/skeleton.css">
+  <link rel="stylesheet" href="./static_files/styles.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <!--<link rel="icon" type="image/png" href="images/favicon.png">-->
+
+</head> 
+<body>
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="container">
+    <section class="header">
+      <h1 class="title">DAM3</h1>
+      <div>
+        <img class="logo" src="./static_files/DAM3.png" width="400">
+      </div>
+      <h4 class="subtitle">Drift-Aware Multi-Memory Model<br>for Imbalanced Data Streams</h4>
+    </section>
+    <section class="summary">
+      <p align="justify">
+        Online class imbalance learning deals with data streams that are affected by both concept drift and class imbalance. Online learning algorithms try to find a trade-off between exploiting previously learned information and incorporating new information into the model. This requires both the incremental update of the model and the ability to unlearn outdated information. <br><br>The improper use of unlearning, however, can lead to the retroactive interference problem, a phenomenon that occurs when newly learned information interferes with the old information and impedes the recall of previously learned information. <br><br>The problem becomes more severe when the classes are not equally represented, resulting in the removal of minority information from the model. <br><br>Drift-Aware Multi-Memory Model (DAM3) mitigates the class imbalance by incorporating an imbalance-sensitive drift detector, preserving a balanced representation of classes in the model, and resolving the retroactive interference problem using a working memory that prevents the forgetting of old information.
+      </p>
+      <p class="alert" style="text-align:left;">
+        Amir Abolfazli, Eirini Ntoutsi.
+        <i>Drift-Aware Multi-Memory Model for Imbalanced Data Streams.</i>
+        In <i>IEEE International Conference on Big Data.</i> 2020.
+      </p>
+    </section>
+    <section class="code-links">
+      <a href="https://github.com/amir-abolfazli/DAM3/code" class="button">
+        Code
+      </a>
+      <a href="https://github.com/amir-abolfazli/DAM3/code/datasets" class="button">
+        Data
+      </a>
+      <a href="https://github.com/amir-abolfazli/DAM3" class="button">
+        Paper
+      </a>
+    </section>
+  </div>
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+
+</body></html>
