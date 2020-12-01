@@ -168,10 +168,10 @@ class DAM3Classifier(BaseSKMObject, ClassifierMixin):
 
 
     def memorySize_check(self):
-        """Makes sure that the WM does not surpass the maximum size."""
+        """Makes sure that the size of all memories (STM + LTM + WM) does not exceed the maximum size."""
+
         size_reduced = False
 
-        """Makes sure that the CM does not exceed the maximum size."""
         if len(self._STMLabels) + len(self._LTMLabels) + len(self._WMLabels) > self.maxSTMSize + self.maxLTMSize + self.maxWMSize:
             if len(self._WMLabels) > self.maxWMSize:
                 WMinstances_cleaned, WMLabels_cleaned = self.cleaning(self._WMinstances, self._WMLabels, onlyLast=False,
@@ -199,14 +199,14 @@ class DAM3Classifier(BaseSKMObject, ClassifierMixin):
         return size_reduced
 
 
-    def overinstance_remainingSet(self, instances, labels, kind='borderline-1'):
-        """Overinstances remaining set (using BorderlineSMOTE) after a drift is detected."""
+    def oversample_remainingSet(self, instances, labels, kind='borderline-1'):
+        """oversamples remaining set (using BorderlineSMOTE) after a drift is detected."""
         if len(np.unique(labels)) >= 2:
             minority_class = collections.Counter(labels.tolist()).most_common()[-1][0]
 
             if np.sum(labels == minority_class) > self.n_neighbors:
-                overinstance = BorderlineSMOTE(k_neighbors=self.n_neighbors, m_neighbors=5, kind=kind, random_state=self.random_state)
-                instances, labels = overinstance.fit_sample(instances, labels)
+                oversample = BorderlineSMOTE(k_neighbors=self.n_neighbors, m_neighbors=5, kind=kind, random_state=self.random_state)
+                instances, labels = oversample.fit_sample(instances, labels)
 
         return instances, labels
 
@@ -227,7 +227,7 @@ class DAM3Classifier(BaseSKMObject, ClassifierMixin):
             self._STMinstances = np.delete(self._STMinstances, shiftRange, 0)
             self._STMLabels = np.delete(self._STMLabels, shiftRange, 0)
 
-            oldSTMinstances, oldSTMLabels = self.overinstance_remainingSet(oldSTMinstances, oldSTMLabels)
+            oldSTMinstances, oldSTMLabels = self.oversample_remainingSet(oldSTMinstances, oldSTMLabels)
 
             self._LTMinstances = np.vstack([self._LTMinstances, oldSTMinstances])
             self._LTMLabels = np.append(self._LTMLabels, oldSTMLabels)
@@ -294,7 +294,7 @@ class DAM3Classifier(BaseSKMObject, ClassifierMixin):
     def noise_removal(self, instances, labels):
         # The idea is to keep the WM inconsistent with LTM all the time.
         # Due to the transfer of instances from LTM (WM) to WM (LTM), some noisy instances might be formed
-        # An instance is considered to be 'noisy' in WM, if it could be correctly classified by LTM classifier.
+        # An instance is considered to as noise in WM, if it could be correctly classified by LTM classifier.
 
         if len(self._LTMLabels) > self.n_neighbors and instances.shape[0] > 0:
             idx_l = []
@@ -369,7 +369,6 @@ class DAM3Classifier(BaseSKMObject, ClassifierMixin):
         distancesSTM = DAM3Classifier.get_distances(x, self._STMinstances)
 
         self._partial_fit_by_all_memories(x, y, distancesSTM)
-        # self._partial_fit_by_GM(x, y,distancesSTM)
 
         self.trainStepCount += 1
 
@@ -387,9 +386,8 @@ class DAM3Classifier(BaseSKMObject, ClassifierMixin):
 
     def _partial_fit_by_all_memories(self, instance, label, distancesSTM):
         """ Updating the prediction history by predicting the label of a given instance by using the STM, LTM and the CM."""
+
         predictedLabelLTM = 0
-        predictedLabelWM = 0
-        predictedLabelSTM_WM = 0
         predictedLabelSTM = 0
         predictedLabelSTM_LTM = 0
 
@@ -440,12 +438,6 @@ class DAM3Classifier(BaseSKMObject, ClassifierMixin):
     def predict(self, X):
         r, c = get_dimensions(X)
         predicted_label = []
-
-        mem_choice = {
-            0: "STM",
-            1: "LTM",
-            2: "STM_LTM"
-        }
 
         if self._STMinstances is None:
             self._STMinstances = np.empty(shape=(0, c))
@@ -610,8 +602,8 @@ class DAM3_DriftDetector(object):
 
 
 # Implementation of FullBayes Classifier
-#### The full Bayes classifier assumes that the distribution of data
-#### can be modeled with a multivariate Gaussian distribution
+# The full Bayes classifier assumes that the distribution of data
+# can be modeled with a multivariate Gaussian distribution
 
 class MultiNormalClassDistribution():
     def __init__(self, data, class_label):
